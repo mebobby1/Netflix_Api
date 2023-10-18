@@ -1,11 +1,9 @@
 import mongoose from "mongoose";
 
+
 const movieSchema = new mongoose.Schema({
-    name:{
-        type:String,
-        required:true,
-    }
+    movieName:String,
 })
 
-export const Movies = mongoose.model("Movies", movieSchema)
+export const Movies = mongoose.model("Movies",movieSchema)
 

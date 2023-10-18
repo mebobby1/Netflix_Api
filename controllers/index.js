@@ -1,4 +1,5 @@
 import {Movies} from "../models/movies.js";
+import fs from "fs";
 
 export const getALLMovies = async (req, res) => {
   await Movies.find().then((response) => {
@@ -42,4 +43,37 @@ export const getMoviesByYear = async(req,res)=>{
       success:true,
       response:moviesByYear,
     })
+}
+
+export const videoStream = (req,res)=>{
+
+  const range = req.headers.range;
+
+  if(!range) return res.send("Range Headers Required")
+
+  const videoPath = "./videoplayer.mp4";
+
+  const VideoSize = fs.statSync(videoPath).size;
+
+  const CHUNK_SIZE = 10 ** 6 ;
+
+  const startRange = Number(range.replace(/\D/g,""))
+
+  const endRange = Math.min(startRange + CHUNK_SIZE, VideoSize - 1)
+
+  const contentLength = endRange - startRange + 1 ;
+
+  const headers = {
+    "Content-Range": `bytes ${startRange} - ${endRange}/ ${VideoSize}`,
+    "Accept-Range": "bytes",
+    "Content-Length": contentLength,
+    "Content-Type": "video/mp4",
+  }
+
+  res.writeHead(206,headers)
+
+  const videoStream = fs.createReadStream(videoPath,{startRange,endRange})
+
+  videoStream.pipe(res)
+
 }

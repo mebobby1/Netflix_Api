@@ -1,6 +1,8 @@
 import express from "express";
 import { config } from "dotenv";
-import browserRouter from "./routes/index.js"
+import browserRouter from "./routes/index.js";
+
+
 
 config({
     path:"./data/config.env"
@@ -9,10 +11,15 @@ config({
 
 export const app = express();
 
+app.set("view engine","ejs")
+
 
 app.use("/api/v1",browserRouter)
 
+
 app.get("/",(req,res)=>{
-    res.send("Hello World")
+    res.render("video");
 })
+
+
 
